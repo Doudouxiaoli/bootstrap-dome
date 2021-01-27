@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+#@layout_admin
+
+#define title()
+<title>项目详细</title>
+#end
+
+#define js()
+<link rel="stylesheet" href="libs/jQuery-validationEngine/validationEngine.jquery.css"/>
+<script type="text/javascript" src="libs/jQuery-validationEngine/jquery.validationEngine.js"></script>
+<script type="text/javascript" src="libs/jQuery-validationEngine/jquery.validationEngine-zh-CN.js"></script>
+<script type="text/javascript" src="libs/jQuery-validationEngine/jquery.validation-add.js"></script>
+<script type="text/javascript" src="res/js/admin/project_detail.js"></script>
+#end
+
+#define main()
+<ol class="breadcrumb mb-3">
+    <li class="breadcrumb-item"><a href="admin/project/list"><span class="fa fa-fw fa-lg fa-home"></span></a></li>
+    <li class="breadcrumb-item active">项目详细</li>
+</ol>
+<div class="mb-3">
+    <button type="button" class="btn btn-sm btn-info navbar-btn" data-toggle="modal"
+            data-target="#_patientInfo"><span class="fa fa-fw fa-eye"></span>查看默认扩展信息
+    </button>
+    #if(model == null || model.proPk == null || model.proPk == 0)
+        <button type="button" data-toggle="modal" data-target="#_addExtend"
+                class="btn btn-success btn-sm navbar-btn"><span class="fa fa-plus fa-fw fa-lg"></span>添加扩展信息
+        </button>
+    #end
+    #if(model != null && model.proPk != null && model.proPk > 0 && ((UserUtil::getLoginUserId()) == model.proCreateUser || (UserUtil::isAdmin())))
+        <a href="patient/list.do?proPk=${model.proPk}" class="btn btn-sm btn-info navbar-btn">
+            <span class="fa fa-fw fa-eye"></span>查看已有数据
+        </a>
+        <a href="admin/patient/detail?proPk=#(model.proPk)" class="btn btn-success btn-sm">
+            <span class="fa fa-plus fa-fw fa-lg"></span>添加受试者
+        </a>
+    #end
+</div>
+<form action="admin/project/save" method="post" id="save_project">
+    <input type="hidden" name="proPk" value='#(model.proPk)'/>
+    <input type="hidden" id="groupMethodHidden" value='#(model.proGroupMethod)'/>
+    <textarea style="display: none;" name="proMemo">#(model.proMemo)</textarea>
+    <div class="card mb-3">
+        <div class="card-header">项目信息</div>
+        <div class="card-body">
+            <div class="form-group form-row">
+                <label class="col-sm-2 col-form-label text-lg-right">项目名称：</label>
+                <div class="col-sm-3">
+                    <input class="form-control validate[required]" id="model.proName" name="proName" value="#(model.proName)"/>
+                </div>
+                <label class="col-sm-2 col-form-label text-lg-right">项目负责人：</label>
+                <div class="col-sm-3">
+                    <input class="form-control" id="model.proBosshead" name="proBosshead"
+                           value="#(model.proBosshead)"/>
+                </div>
+            </div>
+            <div class="form-group form-row">
+                <label class="col-sm-2 col-form-label text-lg-right">临床试验编号：</label>
+                <div class="col-sm-3">
+                    <input class="form-control validate[required]" id="model.proBatchNumber" name="proBatchNumber"
+                           value="#(model.proBatchNumber)"/>
+                </div>
+                <label class="col-sm-2 col-form-label text-lg-right">临床试验负责人：</label>
+                <div class="col-sm-3">
+                    <input class="form-control" id="model.proClinicalTrialBosshead"
+                           name="proClinicalTrialBosshead"
+                           value="#(model.proClinicalTrialBosshead)"/>
+                </div>
+            </div>
+            <div class="form-group form-row">
+                <label class="col-sm-2 col-form-label text-lg-right">临床试验病例数：</label>
+                <div class="col-sm-3">
+                    <input class="form-control validate[required]" type="number" id="model.proPatientCount" name="proPatientCount"
+                           value="#(model.proPatientCount)"/>
+                </div>
+                <label class="col-sm-2 col-form-label text-lg-right">分组数：</label>
+                <div class="col-sm-3">
+                    <input class="form-control validate[required]" type="number" id="model.proGroupCount" name="proGroupCount"
+                           value="#(model.proGroupCount)"/>
+                </div>
+            </div>
+            <div class="form-group form-row">
+                <label class="col-sm-2 col-form-label text-lg-right">随机方法：</label>
+                <div class="col-sm-3">
+                    <select class="form-control" id="model.proGroupMethod" name="proGroupMethod">
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card border-warning mb-3">
+        <div class="card-header text-white bg-warning">扩展信息</div>
+        <div class="card-body">
+            <table id="expend_show_list" class="table table-hover table-condensed table-striped table-noborder">
+                <tr>
+                    <th width="90" align="center">显示名称</th>
+                    <th width="70" align="center">保存名称</th>
+                    <th width="60" align="center">字段类型</th>
+                    <th width="60" align="center">必填标志</th>
+                    <th width="60" align="center">分层标志</th>
+                    <th width="316" align="center">分层数据</th>
+                    <th width="60" align="center">因素权重</th>
+                    <th width="40" class="th_right">&nbsp;</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+    #if(model == null || model.proPk == null || model.proPk == 0)
+        <div style="width: 100%;text-align: center">
+            <button value="重置" type="reset" class="btn btn-sm btn-outline-secondary">重置</button>
+            <button class="btn btn-sm btn-success" value="保存"><span class="fa fa-save fa-fw fa-lg"></span>保存</button>
+        </div>
+    #end
+</form>
+<!-- 默认扩展信息 -->
+<div class="modal fade" id="_patientInfo" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">默认需要填写的受试者信息</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover table-condensed table-striped table-noborder">
+                    <tr>
+                        <th width="120">字段名称</th>
+                        <th width="90">存储名称</th>
+                        <th width="90">字段类型</th>
+                        <th width="90">必填标志</th>
+                    </tr>
+
+                    <tr>
+                        <td>姓名缩写</td>
+                        <td>name</td>
+                        <td>string</td>
+                        <td><span class="fa fa-check fa-fw text-success fa-lg"></span></td>
+                    </tr>
+                    <tr>
+                        <td>编号</td>
+                        <td>code</td>
+                        <td>string</td>
+                        <td><span class="fa fa-check fa-fw text-success fa-lg"></span></td>
+                    </tr>
+                    <tr>
+                        <td>病历号/门诊号</td>
+                        <td>patient_id</td>
+                        <td>string</td>
+                        <td><span class="fa fa-check fa-fw text-success fa-lg"></span></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 添加扩展信息 -->
+<div class="modal fade" id="_addExtend" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">添加扩展信息</h4>
+            </div>
+            <div class="modal-body">
+                <label style="text-align: left;color: #666;">自定义扩展信息，请保证字段名称、存储名称没有重复，
+                    作为分层标志的字段字段类型建议选择”数据选择“，
+                    字段类型为“选择数据”时，请输入用逗号分割的选择数据。
+                </label>
+                <div class="form-group form-inline">
+                    <label>字段名称</label>
+                    <input name="field_name" class="form-control"/>
+                </div>
+                <div class="form-group form-inline">
+                    <label>存储名称</label>
+                    <input name="field_name_key" class="form-control"/>
+                </div>
+                <div class="form-group form-inline">
+                    <label>字段类型</label>
+                    <select name="field_type" class="form-control">
+                        <option value="string">普通文本</option>
+                        <option value="chose">数据选择</option>
+                    </select>
+                </div>
+                <div class="form-group form-inline">
+                    <label>选择数据</label>
+                    <input name="group_data" class="form-control"/>
+                </div>
+                <div class="form-group form-inline">
+                    <label>必填标志</label>
+                    <input type="checkbox" name="field_flag" value="1" class="form-control"/>
+                </div>
+                <div class="form-group form-inline">
+                    <label>分层标志</label>
+                    <input type="checkbox" name="group_flag" value="1" class="form-control"/>
+                </div>
+                <div class="form-group form-inline">
+                    <label>因素权重</label>
+                    <input type="number" name="group_weight" value="1.0" class="form-control"/>
+                </div>
+            </div>
+            <div class="modal-footer" style="text-align: center;display: block;">
+                <button class="btn btn-outline-secondary btn-sm" data-dismiss="modal" type="button">取消</button>
+                <button class="btn btn-success btn-sm" id="save_extend" type="button">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+#end

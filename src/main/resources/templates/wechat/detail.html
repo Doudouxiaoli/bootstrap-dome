@@ -1,0 +1,33 @@
+#@layout()
+
+#define title()
+<title>文章详情</title>
+#end
+
+#define js()
+<script src="libs/viewer/viewer.js"></script>
+<link href="libs/viewer/viewer.css" rel="stylesheet">
+<script src="libs/viewer/jquery-viewer.min.js"></script>
+#end
+
+#define main()
+<body>
+<div style="margin-top: 50px;min-height:100%;padding:0.3rem 0;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;">
+    <h1 style="text-align: center;font-size:0.26rem;">请您先关注公众号</h1>
+    <img src="qrcode.jpg" style="width:4.58rem;height:4.58rem;margin:0.1rem auto 0; pointer-events: auto;">
+</div>
+<script type="text/javascript">
+    var $image = $('img');
+
+    $image.viewer({
+        inline: false,
+        toolbar: 0,
+        navbar: 0,
+        title: '',
+        button: 0,
+        viewed: function () {
+        }
+    });
+</script>
+</body>
+#end

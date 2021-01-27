@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+#@layout()
+
+#define title()
+<title>#(getProjectName())</title>
+#end
+
+#define js()
+<script type="text/javascript">
+
+</script>
+#end
+
+#define main()
+<body class="p-4">
+<div class="card border-warning">
+    <div class="card-header">说明</div>
+    <table class="card-body table table-sm">
+        <thead>
+        <tr>
+            <th class="text-center">主键</th>
+            <th class="text-center">姓名</th>
+            <th class="text-center">登录名</th>
+        </tr>
+        </thead>
+        <tbody>
+        #for(x : list)
+        <tr>
+            <td class="text-center">#(x.suPk)</td>
+            <td class="text-center">#(x.suName)</td>
+            <td class="text-center">#(x.suLoginName)</td>
+        </tr>
+        #end
+        </tbody>
+    </table>
+</div>
+
+</body>
+#end

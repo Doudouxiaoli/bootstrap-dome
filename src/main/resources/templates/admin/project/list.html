@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+#@layout_admin
+
+#define title()
+<title>项目列表</title>
+#end
+
+#define main()
+<ol class="breadcrumb mb-3">
+    <li class="breadcrumb-item"><a href="/admin/project/list"><span class="fa fa-fw fa-lg fa-home"></span></a></li>
+    <li class="breadcrumb-item active">项目列表</li>
+</ol>
+<div class="form-inline mb-3">
+    <form action="/admin/project/list" name="searchForm" id="searchForm" method="post">
+        <div class="input-group input-group-sm">
+            <input id="keyword" name="keyword" value="#(keyword)" class="form-control form-control-sm" placeholder="项目名称或实验编号" style="min-width: 270px;"/>
+            <input type="hidden" id="current" name="current" value="#(page.getCurrent())"/>
+            <input type="hidden" id="size" name="size" value="#(page.getSize())"/>
+            <div class="input-group-append">
+                <button id="search_btn" class="btn btn-sm btn-success " type="button"
+                        onclick="(function(){$('#page').val('');$('form').submit();})();">
+                        <span class="fa fa-search fa-fw fa-lg"></span>
+                </button>
+            </div>
+            <div class="input-group-btn" style="margin-left: 5px;">
+                <button class="btn btn-sm btn-primary" type="button"
+                        onclick="(function(){window.location.href = '/admin/project/detail';})();"><span
+                        class="fa fa-fw fa-lg fa-plus"></span>添加项目
+                </button>
+                <button type="button" class="btn btn-sm btn-info" id="all"
+                        onclick="(function(){$('#keyword').val('');$('form').submit();})();"><span
+                        class="fa fa-fw fa-lg fa-list"></span>显示所有
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+#if(page.records != null && page.records.size() > 0 )
+<div class="table-responsive mb3">
+    <table class="table table-hover table-condensed table-striped">
+        <thead>
+        <tr>
+            <th width="">项目编号</th>
+            <th>项目名称</th>
+            <th width="">试验编号</th>
+            <th class="xs-hidden" width="" style="text-align: center;">样本数量</th>
+            <th width="" style="text-align: center;">分组数</th>
+            <th width="">分组选择</th>
+            <th width="">负责人</th>
+            <th width="" style="text-align: center;" colspan="3">操作</th>
+        </tr>
+        </thead>
+        #for(pro:page.records)
+        <tr class="color2">
+            <td align="center">#((page.size  * (page.current -1)) + (for.index +1) )</td>
+            <td>#(pro.proName)</td>
+            <td>#(pro.proBatchNumber)</td>
+            <td style="text-align: center;">#(pro.proPatientCount)</td>
+            <td style="text-align: center;">#(pro.proGroupCount)</td>
+            <td></td>
+            <td>#(pro.proClinicalTrialBosshead)</td>
+            <td width="30">
+                <a href="/admin/project/detail?proPk=#(pro.proPk)" title="项目详细"><span
+                        class="fa fa-fw fa-edit"></span></a></td>
+            <td width="30"><a href="/admin/patient/detail?proPk=#(pro.proPk)" title="添加受试者"><span
+                    class="fa fa-fw fa-user-plus text-success"></span></a></td>
+            <td width="30"><a href="/admin/patient/list?proPk=#(pro.proPk)" title="查看已有数据"><span
+                    class="fa fa-fw fa-users "></span></a></td>
+        </tr>
+        #end
+    </table>
+</div>
+#include("../include/pojoPageInfo.html", act="admin/project/list", formName="searchForm")
+#end
+#if(page.records == null || page.records.size() <= 0)
+暂无数据！
+#end
+#end

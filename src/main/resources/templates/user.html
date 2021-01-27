@@ -1,0 +1,37 @@
+#@layout()
+
+#define title()
+<title>医脉通用户信息</title>
+#end
+
+#define js()
+<script src="libs/viewer/viewer.js"></script>
+<link href="libs/viewer/viewer.css" rel="stylesheet">
+<script src="libs/viewer/jquery-viewer.min.js"></script>
+#end
+
+#define main()
+<body style="text-align: center">
+<div style="margin-top: 50px;min-height:100%;padding:0.3rem 0;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;">
+    <h1 style="text-align: center;font-size:0.26rem;">头像</h1>
+    <img src="#(user.thumb)" style="width:4rem;height:4rem;margin:0.1rem auto 0; pointer-events: auto;">
+    <p>#(user.nick)</p>
+    <p>#(user.user_id)</p>
+    <p>#(user.reg_time)</p>
+    <p>项目名:#(getProjectName())</p>
+</div>
+<script type="text/javascript">
+    var $image = $('img');
+
+    $image.viewer({
+        inline: false,
+        toolbar: 0,
+        navbar: 0,
+        title: '',
+        button: 0,
+        viewed: function () {
+        }
+    });
+</script>
+</body>
+#end

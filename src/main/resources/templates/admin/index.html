@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+#@layout_admin()
+
+#define title()
+<title>#(com.kingyee.starter.SystemConfig::getProjectName())</title>
+#end
+#define css()
+<style type="text/css">
+    .web-font-desc {
+        font-size: 24px;
+        font-style: normal;
+        padding-left: 35%;
+        padding-top: 25%;
+        -webkit-font-smoothing: antialiased;
+    }
+</style>
+#end
+#define main()
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    #include("include/head.html")
+    <div class="layui-body" style="bottom: 0px">
+        <p class="web-font-desc">#(com.kingyee.starter.SystemConfig::getProjectName())</p>
+    </div>
+</div>
+</body>
+#end
